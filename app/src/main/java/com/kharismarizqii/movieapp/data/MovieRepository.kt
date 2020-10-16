@@ -13,8 +13,8 @@ class MovieRepository @Inject constructor(private val movieApi: MovieApi){
     fun getNowPlayingMovies() =
         Pager(
             config = PagingConfig(
-                pageSize = 18,
-                maxSize = 100,
+                pageSize = 5,
+                maxSize = 20,
                 enablePlaceholders = false
             ),
             pagingSourceFactory = {MoviePagingSource(movieApi)}
