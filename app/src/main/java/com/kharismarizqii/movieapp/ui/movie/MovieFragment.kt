@@ -5,9 +5,11 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.View
 import androidx.appcompat.widget.SearchView
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.observe
+import androidx.paging.LoadState
 import com.kharismarizqii.movieapp.R
 import com.kharismarizqii.movieapp.databinding.FragmentMovieBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -32,10 +34,32 @@ class MovieFragment : Fragment(R.layout.fragment_movie){
                 header = MovieLoadStateAdapter {adapter.retry()},
                 footer = MovieLoadStateAdapter {adapter.retry()}
             )
+            btnTryAgain.setOnClickListener {
+                adapter.retry()
+            }
         }
 
         viewModel.movies.observe(viewLifecycleOwner){
             adapter.submitData(viewLifecycleOwner.lifecycle, it)
+        }
+
+        adapter.addLoadStateListener { loadState ->
+            binding.apply {
+                progressBar.isVisible = loadState.source.refresh is LoadState.Loading
+                rvMovie.isVisible = loadState.source.refresh is LoadState.NotLoading
+                btnTryAgain.isVisible =loadState.source.refresh is LoadState.Error
+                tvFailed.isVisible = loadState.source.refresh is LoadState.Error
+
+                //not found
+                if (loadState.source.refresh is LoadState.NotLoading &&
+                        loadState.append.endOfPaginationReached &&
+                        adapter.itemCount < 1){
+                    rvMovie.isVisible = false
+                    tvNotFound.isVisible = true
+                } else {
+                    tvNotFound.isVisible = false
+                }
+            }
         }
 
         setHasOptionsMenu(true)
