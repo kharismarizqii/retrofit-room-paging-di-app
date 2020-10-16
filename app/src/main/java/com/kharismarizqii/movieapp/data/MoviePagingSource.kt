@@ -9,14 +9,15 @@ import java.io.IOException
 private const val STARTING_PAGE_INDEX = 1
 
 class MoviePagingSource (
-    private val movieApi: MovieApi
+    private val movieApi: MovieApi,
+    private val query: String?
 ): PagingSource<Int, Movie>() {
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Movie> {
 
 
         return try {
             val position = params.key ?: STARTING_PAGE_INDEX
-            val response = movieApi.getNowPlayingMovies(position)
+            val response = if (query!=null) movieApi.searchMovies(query,position) else movieApi.getNowPlayingMovies(position)
             val movies = response.results
 
             LoadResult.Page(
