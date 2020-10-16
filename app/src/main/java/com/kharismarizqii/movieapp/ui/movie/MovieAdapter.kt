@@ -11,7 +11,7 @@ import com.kharismarizqii.movieapp.R
 import com.kharismarizqii.movieapp.data.model.Movie
 import com.kharismarizqii.movieapp.databinding.ItemMovieBinding
 
-class MovieAdapter : PagingDataAdapter<Movie, MovieAdapter.MovieViewHolder>(COMPARATOR) {
+class MovieAdapter(private val listener : OnItemClickListener) : PagingDataAdapter<Movie, MovieAdapter.MovieViewHolder>(COMPARATOR) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieViewHolder {
         val binding = ItemMovieBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -25,8 +25,21 @@ class MovieAdapter : PagingDataAdapter<Movie, MovieAdapter.MovieViewHolder>(COMP
         }
     }
 
-    class MovieViewHolder(private val binding: ItemMovieBinding) :
+    inner class MovieViewHolder(private val binding: ItemMovieBinding) :
         RecyclerView.ViewHolder(binding.root) {
+
+        init {
+            binding.root.setOnClickListener {
+                val position = bindingAdapterPosition
+                if (position != RecyclerView.NO_POSITION){
+                    val item = getItem(position)
+                    if (item!=null){
+                        listener.onItemClick(item)
+                    }
+                }
+            }
+        }
+
         fun bind(movie: Movie) {
             with(binding) {
                 Glide.with(itemView)
@@ -38,6 +51,10 @@ class MovieAdapter : PagingDataAdapter<Movie, MovieAdapter.MovieViewHolder>(COMP
                 tvMovieTitle.text = movie.original_title
             }
         }
+    }
+
+    interface OnItemClickListener{
+        fun onItemClick(movie: Movie)
     }
 
     companion object {
