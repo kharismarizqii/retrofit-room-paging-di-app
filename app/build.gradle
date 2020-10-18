@@ -62,7 +62,6 @@ dependencies {
 
     // Dagger Hilt
     implementation "com.google.dagger:hilt-android:$hiltVersion"
-    annotationProcessor 'androidx.room:room-compiler:2.2.5'
     kapt "com.google.dagger:hilt-android-compiler:$hiltVersion"
     implementation "androidx.hilt:hilt-lifecycle-viewmodel:$hiltAndroidXVersion"
     kapt "androidx.hilt:hilt-compiler:$hiltAndroidXVersion"
