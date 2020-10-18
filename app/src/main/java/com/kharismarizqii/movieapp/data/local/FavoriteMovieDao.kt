@@ -1,8 +1,7 @@
 package com.kharismarizqii.movieapp.data.local
 
-import android.util.Log
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 
@@ -10,6 +9,9 @@ import androidx.room.Query
 interface FavoriteMovieDao {
     @Insert
     suspend fun addToFavorite(favoriteMovie: FavoriteMovie)
+
+    @Query("SELECT * FROM favorite_movie")
+    fun getFavoriteMovie(): LiveData<List<FavoriteMovie>>
 
     @Query("SELECT count(*) FROM favorite_movie WHERE favorite_movie.id_movie = :id")
     suspend fun checkMovie(id: String): Int
